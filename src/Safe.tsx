@@ -11,6 +11,13 @@ export interface Callback {
     (error: Error, result: any): void;
 }
 
+export interface SafeDetails {
+    name: string,
+    address: string,
+    balance: string,
+    owners: string[],
+}
+
 /**
  * A Safe Provider + Chain uniquely identifies a Safe.
  * e.g. "GnosisSafe on Optimism", "GnosisSafe on Arbitrum", "Realms on Solana", "Cashmere on Solana"...
@@ -42,5 +49,18 @@ export interface Safe {
      * @param address : Address of the safe
      * This is useful when searching for detecting which network the safe is on (in the onboarding)
      */
-    isValidSafeAddress(address: String) : boolean;
+    isValidSafeAddress(address: String) : Promise<boolean>;
+
+    /**
+     * @param address : Address of the safe
+     * 
+     * This should pop up metamask/walletconnect/phantom etc to allow the user to sign a message and then check if the signer address is owner on the safe
+     */
+    isOwner(address: String, callback: Callback) : React.Component;
+
+    /**
+     * @param address : Address of the safe
+     * Fetch the details of the safe from the appropriate api and return the details
+     */
+    getSafeDetails(address: String) : Promise<SafeDetails>; 
 }
