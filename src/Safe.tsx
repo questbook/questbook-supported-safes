@@ -7,8 +7,20 @@ export interface Transaction {
     metadata: any
 }
 
-export interface Callback {
-    (error: Error, result: any): void;
+export enum TransactionStatus {
+    PENDING,
+    SUCCESS,
+    FAILED,
+}
+
+export interface TransactionResult {
+    transactionHash: string,
+    url: string, // url on the safe to view the transaction
+    status: TransactionStatus,
+}
+
+export interface Callback<T> {
+    (error: Error, result: T): void;
 }
 
 export interface SafeDetails {
@@ -43,7 +55,7 @@ export interface Safe {
      *   5. Update the transaction on the Questbook smart contract
      *   6. Close the modal using the Callback
      */
-    proposeTransactions(transactions : Transaction[], Callback): React.Component;
+    proposeTransactions(transactions : Transaction[], callback: Callback<TransactionResult>): React.Component;
 
     /**
      * @param address : Address of the safe
@@ -56,7 +68,7 @@ export interface Safe {
      * 
      * This should pop up metamask/walletconnect/phantom etc to allow the user to sign a message and then check if the signer address is owner on the safe
      */
-    isOwner(address: String, callback: Callback) : React.Component;
+    isOwner(address: String, callback: Callback<any>) : React.Component;
 
     /**
      * @param address : Address of the safe
